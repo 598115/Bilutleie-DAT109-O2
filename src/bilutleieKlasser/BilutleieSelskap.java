@@ -1,6 +1,7 @@
 package bilutleieKlasser;
 
 import java.util.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -11,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.stream.Stream;
-
 import javax.swing.JOptionPane;
 
 public class BilutleieSelskap {
@@ -21,7 +20,7 @@ private String navn;
 private String tlf;
 private String adresse;
 private Map<String, Integer>  prisliste;
-private Map<Integer, Kunde> kundeliste;
+private Map<String, Kunde> kundeliste;
 private List<Kontor> kontorer;
 
 public BilutleieSelskap(String navn, String tlf, String adresse) {
@@ -44,26 +43,26 @@ public BilutleieSelskap(String navn, String tlf, String adresse) {
     List<Bil> k1 = new LinkedList<>();
     List<Bil> k2 = new LinkedList<>();
     List<Bil> k3 = new LinkedList<>();
-    k1.add(new Bil("BD32399", "Toyota", "GR Yaris", 36943, "sport"));
-    k1.add(new Bil("ST12345", "Suzuki", "4x4", 95321, "4door"));
-    k1.add(new Bil("SX54321", "VW", "Beetle", 43456, "2door"));
-    k1.add(new Bil("TV12345", "Kia", "ioniq", 65432, "4door"));
-    k1.add(new Bil("UX23456", "Ford", "Transit", 120000, "utility"));
+    k1.add(new Bil("BD32399", "Toyota", "GR Yaris", 36943, "sport", "Bergen"));
+    k1.add(new Bil("ST12345", "Suzuki", "4x4", 95321, "4door", "Bergen"));
+    k1.add(new Bil("SX54321", "VW", "Beetle", 43456, "2door", "Bergen"));
+    k1.add(new Bil("TV12345", "Kia", "ioniq", 65432, "4door", "Bergen"));
+    k1.add(new Bil("UX23456", "Ford", "Transit", 120000, "utility", "Bergen"));
 
-    k2.add(new Bil("BR56799", "Toyota", "GR Yaris", 86943, "sport"));
-    k2.add(new Bil("XT17655", "Suzuki", "4x4", 25321, "4door"));
-    k2.add(new Bil("CX23456", "VW", "Beetle", 123456, "2door"));
-    k2.add(new Bil("XS67890", "Kia", "ioniq", 155432, "4door"));
-    k2.add(new Bil("UT40321", "Ford", "Transit", 20000, "utility"));
+    k2.add(new Bil("BR56799", "Toyota", "GR Yaris", 86943, "sport", "Drammen"));
+    k2.add(new Bil("XT17655", "Suzuki", "4x4", 25321, "4door", "Drammen" ));
+    k2.add(new Bil("CX23456", "VW", "Beetle", 123456, "2door", "Drammen"));
+    k2.add(new Bil("XS67890", "Kia", "ioniq", 155432, "4door", "Drammen"));
+    k2.add(new Bil("UT40321", "Ford", "Transit", 20000, "utility", "Drammen"));
 
-    k3.add(new Bil("VW44399", "Toyota", "GR Yaris", 67839, "sport"));
-    k3.add(new Bil("RD22345", "Suzuki", "4x4", 11234, "4door"));
-    k3.add(new Bil("RZ24321", "VW", "Beetle", 2567, "2door"));
-    k3.add(new Bil("TA33345", "Kia", "ioniq", 5566, "4door"));
-    k3.add(new Bil("ED23673", "Ford", "Transit", 123, "utility"));
+    k3.add(new Bil("VW44399", "Toyota", "GR Yaris", 67839, "sport", "Oslo"));
+    k3.add(new Bil("RD22345", "Suzuki", "4x4", 11234, "4door", "Oslo"));
+    k3.add(new Bil("RZ24321", "VW", "Beetle", 2567, "2door", "Oslo"));
+    k3.add(new Bil("TA33345", "Kia", "ioniq", 5566, "4door", "Oslo"));
+    k3.add(new Bil("ED23673", "Ford", "Transit", 123, "utility", "Oslo"));
     //Oppretter kontorer
     kontorer.add(new Kontor(1, "Flesland, Bergen", "12345678", k1));
-    kontorer.add(new Kontor(2, "Oslo S, Oslo", "87654321", k2));
+    kontorer.add(new Kontor(2, "Sentrum 1, Drammen", "87654321", k2));
     kontorer.add(new Kontor(2, "Oslo S, Oslo", "12344321", k3));
 }
 
@@ -85,27 +84,50 @@ Kontor valgtKontor = velgKontor2();
 
 //Finner alle tilgjengelige biler i perioden fra valgt kontor
 List<Bil> bilerTilgjengelig = valgtKontor.getTilgjeng(resd, reslev);
+System.out.println("Biler tilgjengelig " + bilerTilgjengelig.toString());      /////////////////////////////////////////////////
 
 //Henter liste over tilgjengelige bilklasser
 List<String> klasser = valgtKontor.getTilgjengKlasser(bilerTilgjengelig, prisliste);
+System.out.println("Klasser tilgjengelig " + klasser.toString());                                 //////////////////////////
 String valg = velgKlasse(klasser, valgtKontor);
+System.out.println("Klasse valgt " + valg.toString());                                      ////////////////
 
 //Henter liste over aktuelle biler
-String klasse = valg.replaceAll(" \\(\\d+\\)$", "");
+String klasse = extractClass(valg);
+System.out.println("Klasse valgt regexed " + klasse.toString());                              ///////////////////////
 List<Bil> valgteBiler = valgtKontor.bilklasseFilter(bilerTilgjengelig, klasse);
+System.out.println("Biler I valgt klasse " + valgteBiler.toString());                       ///////////////////////
 
 //Velger bil
 Bil valgtBil = velgBil(valgteBiler);
 
 //Finner/Oppretter kunde
-
+Kunde kunden = kundebehandling();
+System.out.println("Opprettet kunde: " + kunden.toString());                      ///////////////////
 
 //Reserverer
-valgtKontor.reserverBil(valgtBil, resd, reslev, null);
-
+String kvittering = valgtKontor.reserverBil(valgtBil, resd, reslev, kunden);
+JOptionPane.showMessageDialog(null, kvittering);
     
 }
 
+
+private String extractClass(String valg) {
+
+    if(valg.contains("2door")) {
+        return "2door";
+    }
+    if(valg.contains("4door")) {
+        return "4door";
+    }
+    if(valg.contains("sport")) {
+        return "sport";
+    }
+    if(valg.contains("utility")) {
+        return "utility";
+    }
+    return null;
+}
 
 //TODO 
 public String velgKlasse(List<String> alternativ, Kontor k) {
@@ -145,22 +167,42 @@ public Bil velgBil(List<Bil> liste) {
 public Kunde kundebehandling() {
 
     String[] liste = {"Ja","Nei"};
+    Kunde kunden = null;
 
-    int valg = JOptionPane.showOptionDialog(null, "Er du ny kunde?", "Bilvalg",
+    int valg = JOptionPane.showOptionDialog(null, "Er du ny kunde?", "Kunde",
     0, JOptionPane.QUESTION_MESSAGE, null, liste, liste[0]);
    
      if (valg == 0) {
 
-        int nykundevalg = JOptionPane.showOptionDialog(null, "Er du ny kunde?", "Bilvalg",
-    0, JOptionPane.QUESTION_MESSAGE, null, liste, liste[0]);
+      kunden = kundeOppretting();
       
     } else if(valg == 1) {
        
+       kunden = finnKunde();
     }
     else {
         return kundebehandling(); // Rekursivt kall for ikke-valid valg
     }
-   return null;
+   return kunden;
+}
+
+private Kunde finnKunde() {
+
+    String tlf = JOptionPane.showInputDialog(null, "Oppgi telefon nummer");
+    return kundeliste.get(tlf);
+}
+
+//TODO
+private Kunde kundeOppretting() {
+    
+        String fn = JOptionPane.showInputDialog(null, "Oppgi fornavn");
+        String en = JOptionPane.showInputDialog(null, "Oppgi etternavn");
+        String ad = JOptionPane.showInputDialog(null, "Oppgi addresse");
+        String tlf = JOptionPane.showInputDialog(null, "Oppgi telefon nummer");
+        
+        Kunde kunden = new Kunde(fn, en, ad, tlf);
+        kundeliste.put(tlf, kunden);
+        return kunden;
 }
 
 public String getNavn() {
@@ -200,7 +242,7 @@ private Calendar datoValidering(String s) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar;
-   } catch (Exception e) {
+   } catch (ParseException e) {
     e.printStackTrace();
     JOptionPane.showConfirmDialog(null, "Invalid tids-format");
     return null;

@@ -18,6 +18,7 @@ public Reservasjon(Calendar reservDato, Calendar leverDato, int kmUt, Kunde kund
     this.leverDato = leverDato;
     this.kmUt = kmUt;
     this.kunden = kunden;
+    this.bilen = bilen;
 }
 
 //TODO
@@ -84,6 +85,17 @@ public Bil getBilen() {
 
 public void setBilen(Bil bilen) {
     this.bilen = bilen;
+}
+
+@Override
+public String toString() {
+    return 
+
+    "Bekreftet reservasjon: \n"
+    + "Fra: " + reservDato.getTime().toString() + "\n"
+    + "Til: " + leverDato.getTime().toString() + "\n"
+    + "For kunde: " + this.kunden.toString() + "\n"
+    + "Bil: " + this.bilen.toString();
 }
 
 }

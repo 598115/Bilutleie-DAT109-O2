@@ -11,12 +11,13 @@ class Bil {
     private String klasse;
     private String baseKontor;
 
-    public Bil(String regnr, String merke, String modell, int km, String klasse) {
+    public Bil(String regnr, String merke, String modell, int km, String klasse, String baseKontor) {
         this.regnr = regnr;
         this.merke = merke;
         this.modell = modell;
         this.km = km;
         this.klasse = klasse;
+        this.baseKontor = baseKontor;
     }
     
     /**

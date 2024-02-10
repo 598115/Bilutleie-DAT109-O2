@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Kontor {
@@ -60,7 +58,11 @@ return listen.stream().filter(b -> b.getKlasse().equals(klassen)).toList();
 
 //TODO
 public String reserverBil(Bil b, Calendar f, Calendar t, Kunde k) {
- return null;
+ 
+  Reservasjon nyReservasjon = new Reservasjon(f, t, b.getKm(), k, b);
+  reservasjoner.add(nyReservasjon);
+  return nyReservasjon.toString();
+
 }
 
 //TODO
